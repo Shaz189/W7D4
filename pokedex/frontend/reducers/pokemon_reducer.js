@@ -1,4 +1,4 @@
-import { RECEIVE_ALL_POKEMON, RECEIVE_POKEMON } from '../actions/pokemon_actions';
+import { RECEIVE_ALL_POKEMON, RECEIVE_POKEMON, CREATE_POKEMON } from '../actions/pokemon_actions';
 import { merge } from 'lodash';
 
 export default (state = {}, action) => {
@@ -10,6 +10,7 @@ export default (state = {}, action) => {
       return action.pokemons;
 
     case RECEIVE_POKEMON:
+    case CREATE_POKEMON:
       newState[action.pokemon.id] = action.pokemon;
       return newState;
 

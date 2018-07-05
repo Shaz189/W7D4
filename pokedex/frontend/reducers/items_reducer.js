@@ -8,7 +8,7 @@ export default (state = {}, action) => {
 
   switch (action.type) {
     case RECEIVE_POKEMON:
-      return action.pokemon.items;
+      return action.pokemon.items || {};
 
     default:
      return state;

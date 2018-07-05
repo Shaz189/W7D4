@@ -25,7 +25,7 @@ class PokemonDetail extends React.Component {
     });
 
     return (
-      <div>
+      <div className="pokemon-details">
         <h1>{poke.name}</h1>
         <ul>
           {itemArr}
