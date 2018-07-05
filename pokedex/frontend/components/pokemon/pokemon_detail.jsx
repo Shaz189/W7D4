@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link, Route } from 'react-router-dom';
+import ItemDetail from './item_detail';
 
 class PokemonDetail extends React.Component {
   constructor(props) {
     super(props);
-
   }
 
   componentDidMount() {
@@ -11,9 +12,17 @@ class PokemonDetail extends React.Component {
   }
 
   render () {
-    const poke = this.props.poke;
+    const poke = this.props.poke || {};
     const items = this.props.items;
-    const itemArr = items.map(item => <li key={item.id}>{item.name}</li>);
+
+    const itemArr = items.map(item => {
+      const itemUrl = `/pokemon/${poke.id}/items/${item.id}`;
+      return (
+        <Link to={itemUrl}>
+          <li key={item.id}>{item.name}</li>
+        </Link>
+      );
+    });
 
     return (
       <div>
@@ -21,9 +30,13 @@ class PokemonDetail extends React.Component {
         <ul>
           {itemArr}
         </ul>
+        <Route
+          path='/pokemon/:pokemonId/items/:itemId'
+          component={ItemDetail} />
       </div>
     );
   }
 }
 
 export default PokemonDetail;
+// maybe export with explicit wrapping of route

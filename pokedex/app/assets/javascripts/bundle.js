@@ -143,6 +143,87 @@ var fetchSinglePokemon = exports.fetchSinglePokemon = function fetchSinglePokemo
 
 /***/ }),
 
+/***/ "./frontend/components/pokemon/item_detail.jsx":
+/*!*****************************************************!*\
+  !*** ./frontend/components/pokemon/item_detail.jsx ***!
+  \*****************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactRedux = __webpack_require__(/*! react-redux */ "./node_modules/react-redux/es/index.js");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ItemDetail = function (_React$Component) {
+  _inherits(ItemDetail, _React$Component);
+
+  function ItemDetail() {
+    _classCallCheck(this, ItemDetail);
+
+    return _possibleConstructorReturn(this, (ItemDetail.__proto__ || Object.getPrototypeOf(ItemDetail)).call(this));
+  }
+
+  _createClass(ItemDetail, [{
+    key: 'render',
+    value: function render() {
+      var item = this.props.item;
+      return _react2.default.createElement(
+        'ul',
+        null,
+        _react2.default.createElement(
+          'li',
+          null,
+          item.name
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          item.price
+        ),
+        _react2.default.createElement(
+          'li',
+          null,
+          item.happiness
+        ),
+        _react2.default.createElement('img', { src: item.image_url })
+      );
+    }
+  }]);
+
+  return ItemDetail;
+}(_react2.default.Component);
+
+var mapStateToProps = function mapStateToProps(state, ownProps) {
+  var id = ownProps.match.params.itemId;
+  var item = state.entities.items[id];
+  return {
+    item: item
+  };
+};
+
+exports.default = (0, _reactRedux.connect)(mapStateToProps)(ItemDetail);
+
+/***/ }),
+
 /***/ "./frontend/components/pokemon/pokemon_detail.jsx":
 /*!********************************************************!*\
   !*** ./frontend/components/pokemon/pokemon_detail.jsx ***!
@@ -162,6 +243,12 @@ var _createClass = function () { function defineProperties(target, props) { for 
 var _react = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 
 var _react2 = _interopRequireDefault(_react);
+
+var _reactRouterDom = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+
+var _item_detail = __webpack_require__(/*! ./item_detail */ "./frontend/components/pokemon/item_detail.jsx");
+
+var _item_detail2 = _interopRequireDefault(_item_detail);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -188,13 +275,19 @@ var PokemonDetail = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var poke = this.props.poke;
+      var poke = this.props.poke || {};
       var items = this.props.items;
+
       var itemArr = items.map(function (item) {
+        var itemUrl = '/pokemon/' + poke.id + '/items/' + item.id;
         return _react2.default.createElement(
-          'li',
-          { key: item.id },
-          item.name
+          _reactRouterDom.Link,
+          { to: itemUrl },
+          _react2.default.createElement(
+            'li',
+            { key: item.id },
+            item.name
+          )
         );
       });
 
@@ -210,7 +303,10 @@ var PokemonDetail = function (_React$Component) {
           'ul',
           null,
           itemArr
-        )
+        ),
+        _react2.default.createElement(_reactRouterDom.Route, {
+          path: '/pokemon/:pokemonId/items/:itemId',
+          component: _item_detail2.default })
       );
     }
   }]);
@@ -219,6 +315,7 @@ var PokemonDetail = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = PokemonDetail;
+// maybe export with explicit wrapping of route
 
 /***/ }),
 
@@ -309,6 +406,11 @@ var PokemonIndex = function (_React$Component) {
   }
 
   _createClass(PokemonIndex, [{
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      this.props.fetchAllPokemon();
+    }
+  }, {
     key: 'render',
     value: function render() {
       var pokemon = this.props.pokemon;
@@ -369,7 +471,9 @@ var mapStateToProps = function mapStateToProps(state) {
 
 var mapDispatchToProps = function mapDispatchToProps(dispatch) {
   return {
-    fetchAllPokemon: dispatch((0, _pokemon_actions.fetchAllPokemon)())
+    fetchAllPokemon: function fetchAllPokemon() {
+      return dispatch((0, _pokemon_actions.fetchAllPokemon)());
+    }
   };
 };
 
@@ -484,7 +588,7 @@ var Root = function Root(_ref) {
       _react2.default.createElement(
         'div',
         null,
-        _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/', component: _pokemon_index_container2.default }),
+        _react2.default.createElement(_reactRouterDom.Route, { path: '/', component: _pokemon_index_container2.default }),
         _react2.default.createElement(_reactRouterDom.Route, { path: '/pokemon/:pokemonId', component: _pokemon_detail_container2.default })
       )
     )
@@ -759,6 +863,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 var fetchAllPokemon = exports.fetchAllPokemon = function fetchAllPokemon() {
+
   return $.ajax({
     method: "GET",
     url: "/api/pokemon"
@@ -766,7 +871,6 @@ var fetchAllPokemon = exports.fetchAllPokemon = function fetchAllPokemon() {
 };
 
 var fetchPokemon = exports.fetchPokemon = function fetchPokemon(poke) {
-  debugger;
   return $.ajax({
     method: 'GET',
     url: "/api/pokemon/" + poke.id
@@ -2826,6 +2930,20 @@ var invariant = function(condition, format, a, b, c, d, e, f) {
 };
 
 module.exports = invariant;
+
+
+/***/ }),
+
+/***/ "./node_modules/isarray/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/isarray/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
 
 
 /***/ }),
@@ -20416,7 +20534,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isarray = __webpack_require__(/*! isarray */ "./node_modules/path-to-regexp/node_modules/isarray/index.js")
+var isarray = __webpack_require__(/*! isarray */ "./node_modules/isarray/index.js")
 
 /**
  * Expose `pathToRegexp`.
@@ -20842,20 +20960,6 @@ function pathToRegexp (path, keys, options) {
 
   return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
 }
-
-
-/***/ }),
-
-/***/ "./node_modules/path-to-regexp/node_modules/isarray/index.js":
-/*!*******************************************************************!*\
-  !*** ./node_modules/path-to-regexp/node_modules/isarray/index.js ***!
-  \*******************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
 
 
 /***/ }),
