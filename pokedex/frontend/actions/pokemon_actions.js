@@ -62,3 +62,12 @@ export const createPokemon = (poke) => {
     );
   };
 };
+
+export const updatePokemon = poke => {
+  return dispatch => {
+    return ApiUtil.updatePokemon(poke).then(
+        poke => dispatch(receivePokemon(poke)),
+        err => dispatch(receivePokemonError(err))
+    );
+  };
+};

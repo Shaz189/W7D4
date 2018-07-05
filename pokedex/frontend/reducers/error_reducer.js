@@ -8,8 +8,7 @@ export default (state = [], action) => {
 
   switch (action.type) {
     case RECEIVE_POKEMON_ERROR:
-      action.err.forEach(error => newState.push(error));
-      return newState;
+      return action.err;
 
     default:
     return state;

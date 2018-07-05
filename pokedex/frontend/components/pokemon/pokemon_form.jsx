@@ -1,6 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { createPokemon } from '../../actions/pokemon_actions';
 import { withRouter } from 'react-router-dom';
 
 class PokemonForm extends React.Component {
@@ -28,9 +26,20 @@ class PokemonForm extends React.Component {
 
   handleSubmit (e) {
     e.preventDefault();
-    this.props.createPokemon(this.state).then((newPokemon) => {
-      this.props.history.push(`pokemon/${newPokemon.id}`);
-    });
+    if (this.props.createPokemon) {
+      this.props.createPokemon(this.state).then((newPokemon) => {
+        this.props.history.push(`pokemon/${newPokemon.id}`);
+      });
+    } else {
+      this.props.updatePokemon(this.state).then(updatedPokemon => {
+        this.props.history.push(`pokemon/${updatedPokemon.id}`);
+      });
+    }
+  }
+
+  componentWillReceieveProps(newProps) {
+    debugger
+    this.setState(newProps.poke);
   }
 
   render () {
@@ -83,19 +92,4 @@ class PokemonForm extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
-  return {
-    errors: state.ui.errors
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    createPokemon: (poke) => dispatch(createPokemon(poke))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(PokemonForm));
+export default withRouter(PokemonForm);

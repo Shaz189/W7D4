@@ -1,6 +1,8 @@
 import React from 'react';
 import PokemonIndexItem from './pokemon_index_item';
-import PokemonForm from './pokemon_form';
+import CreateFormContainer from './create_form_container';
+import { Link, Route } from 'react-router-dom';
+
 
 class PokemonIndex extends React.Component {
   constructor (props) {
@@ -21,7 +23,7 @@ class PokemonIndex extends React.Component {
 
     return (
       <section className="pokedex">
-        <PokemonForm />
+        <Link to='/pokemon/new'>Create New Pokemon</Link>
         <ul>
           {pokemonItems}
         </ul>
